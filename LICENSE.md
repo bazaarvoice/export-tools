@@ -1,3 +1,6 @@
-Copyright 2016 Bazaarvoice, Inc.
+Copyright 2015 Bazaarvoice, Inc.
  
-Internal business purposes only.  Unauthorized use is prohibited.
+Bazaarvoice copyright materials may not be reproduced in whole or in part by
+persons, organizations or corporations other than Bazaarvoice, Inc., its
+affiliates and divisions without the prior written permission of the Legal
+Department at Bazaarvoice, Inc.
