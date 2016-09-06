@@ -50,16 +50,15 @@ This script is used to get dates/versions available and get individual file.
     
 ## dcecurl_bulk.pl
 
-This script is used to get files in bulk.
-
-```
-./dcecurl_bulk.pl --env=<env> --date=<date> --version=<version> --dest=<dest>
-```
- --env=<env> : stg or prod (must)
- --date=<date> : date like 2016-08-22 (must)
- --version=<version> : version of data, like v1, v2, ... (must)
- --dest=<dest> : target folder to store data. Current folder '.' is used if not specified. (optional)
- --cat=<category> : category data to download. If not specified, all data are downloaded. (optional)
+- This script is used to get files in bulk.
+  ```
+  ./dcecurl_bulk.pl --env=<env> --date=<date> --version=<version> --dest=<dest>
+  ```
+  - --env=<env> : stg or prod (must)
+  - --date=<date> : date like 2016-08-22 (must)
+  - --version=<version> : version of data, like v1, v2, ... (must)
+  - --dest=<dest> : target folder to store data. Current folder '.' is used if not specified. (optional)
+  - --cat=<category> : category data to download. If not specified, all data are downloaded. (optional)
  
 
 Example
