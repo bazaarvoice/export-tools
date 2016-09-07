@@ -25,7 +25,7 @@
 #    
 #
 # ./dcecurl_bulk.pl --env=<env> --date=<date> --version=<version> --dest=<dest>
-# EX. ./dcecurl.pl --env=stg --date=2016-08-22 --version=v1 --dest=.
+# EX. ./dcecurl_bulk.pl --env=stg --date=2016-08-22 --version=v1 --dest=.
 # This will download all data of v1 on 2016-08-22 . Downloaded files can be found at <dest>/<category>, like ./answers/, ./questions/, ./reviews/
 
 use strict;
@@ -40,7 +40,6 @@ require HTTP::Headers;
 require HTTP::Request;
 require LWP::UserAgent;
 
-print $#ARGV;
 if ($#ARGV < 2 || $#ARGV > 4)
 {
   print "\nUsage: $0 --env=<env> --date=<date> -version=<version> --dest=<dest> --cat=<category>\n";
@@ -98,11 +97,9 @@ my $message = "$path&x-api-key=$envs{$env}{'xApiKey'}&timestamp=$timestamp";
 my $args = "-L";
 my $url = "$hosts{$env}/v1/dce/data?$path";
 utf8::encode($message);
-#print "$message\n"; #debug
 my $secret  = $envs{$env}{'secret'};
 utf8::encode($secret);
 my $sign = hmac_sha256_hex($message, $secret);
-#print "$sign\n"; #debug
 
 my $headers                 =  HTTP::Headers->new(
   Host                      => $hosts{$env},
@@ -122,7 +119,6 @@ print $cmd;
 print "\n";
 print "\n";
 my $decoded_json = decode_json( `$cmd` );
-print Dumper $decoded_json;
 
 # start to download individual files
 foreach my $key( keys %{$decoded_json} ) { 

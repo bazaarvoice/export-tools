@@ -37,7 +37,7 @@ This script is used to get dates/versions available and get individual file.
    ./dceurl.pl --env=<env> --path=<path> --dest=<dest>
    ```
    - --env=<env> : stg or prod 
-   - --path=<path> : path to file, which can be found in manifest.json. 
+   - --path=<path> : path to file, which can be manifest.json or items found in manifest.json  
    - --dest=<dest> : target folder to store data. Current folder '.' is used if not specified. (optional)
    
    Example:

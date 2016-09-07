@@ -85,11 +85,9 @@ if (defined $path)           # query param exists
 }
 
 utf8::encode($message);
-#print "$message\n"; #debug
 my $secret  = $envs{$env}{'secret'};
 utf8::encode($secret);
 my $sign = hmac_sha256_hex($message, $secret);
-#print "$sign\n"; #debug
 
 my $headers                 =  HTTP::Headers->new(
   Host                      => $hosts{$env},
