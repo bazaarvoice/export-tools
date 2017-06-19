@@ -1,4 +1,4 @@
-#!/usr/bin/env python26
+#!/usr/bin/env python
 """
 title: DCE Downloader
 description: Downloads DCE data from DCE service in BV in bulk
@@ -12,98 +12,130 @@ import requests
 import logging
 import json
 
-# logging.basicConfig(level=logging.DEBUG)
+# Create hmac signature
+def createSignature(passkey, secretKey, timestamp, path):
+    # If 'path' parameter will be in the GET request, we must include it as part of the HMAC signature.
 
-# host url for DCE services
-DCE_HOSTS = {
-    "stg": "data-stg.nexus.bazaarvoice.com",
-    "prod": "data.nexus.bazaarvoice.com"
-}
+    if path:
+        message = "path={0}&passkey={1}&timestamp={2}".format(path, passkey, timestamp)
+    else:
+        message = "passkey={0}&timestamp={1}".format(passkey, timestamp)
+
+    return hmac.new(secretKey, message, hashlib.sha256).hexdigest()
+
+def buildBVHeaders(passkey, signature, timestamp):
+    return {'X-Bazaarvoice-Passkey': passkey, 'X-Bazaarvoice-Signature': signature, 'X-Bazaarvoice-Timestamp': timestamp}
+
+def doHttpGet(url, passkey, secretKey, path):
+    timestamp = str(round(time.time() * 1000))
+
+    # Get current manifests
+    signature = createSignature(passkey=passkey, secretKey=secretKey, timestamp=timestamp, path=path)
+
+    headers = buildBVHeaders(passkey, signature, timestamp)
+
+    params = { 'path' : path } if path else {}
+
+    resp = requests.get(url, params=params, headers=headers, timeout=60, allow_redirects=True, stream=True)
+    return resp
+
+def getManifestForDate(manifests, version, date, type):
+    for manifest_record in manifests:
+        if manifest_record['version'] == version and type in manifest_record:
+            for item in manifest_record[type]:
+                if item['date'] == date:
+                    return item['path']
+
+    return None
+
+def saveFile(dest, path, content):
+    file = dest + path
+    print "Saving as " + file
+
+    dirname = os.path.dirname(file)
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+
+    with open(file, "wb") as file:
+        file.write(content)
 
 # Main part
 if __name__ == '__main__':
     # Setting script parameters and variables
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('-key-path',  dest='keypath', help='path to json file which includes x-api-key and shared key. '
-                                                       'Refer to keys.json, which is used if not specified')
-    p.add_argument('-env',  dest='environment', help='environment of DCE service, stg or prod.')
-    p.add_argument('-manifest', dest='manifest', help='path of manifest.json')
-    p.add_argument('-dest', dest='destination', help='destination folder to store downloaded data; current folder is used if not present')
-    p.add_argument('-type', dest='category', help='type of files, like reviews, questions...')
-    p.add_argument('--run', dest='run', action='store_true', help="Need to specify for actual execution!")
+    p.add_argument('-config',  dest='configFile', help='path to configuration (default is ../config.json)')
+    p.add_argument('-env',  dest='environment', help='environment of DCE service (must be present in config file)')
+    p.add_argument('-date', dest='date', help='date of files to download, in YYYY-mm-dd format')
+    p.add_argument('-dest', dest='destination', help='destination folder to store downloaded data; ./output is used if not present')
+    p.add_argument('-type', dest='category', help='type of files, like reviews, questions... (defaults to all types)')
+    p.add_argument('-version', dest='version', help='version of data to retrieve (defaults to v2)')
     opts = p.parse_args()
 
     # Determine operation mode or print help
-    if not opts.run:
+    if not opts.environment or not opts.date:
         p.print_help()
         exit(1)
 
-    if not opts.environment or opts.environment not in ['stg', 'prod']:
-        p.print_help()
+    configFile = opts.configFile if opts.configFile else "../config.json"
+    version = opts.version if opts.version else "v2"
+    date = opts.date
+    category = opts.category if opts.category else "all"
+    destination = opts.destination.rstrip('\\') if opts.destination else "./output"
+
+    if not os.path.isfile(configFile):
+        exit("Config file \"" + configFile + "\" does not exist")
+    else:
+        with open(configFile) as key_file:
+            config = json.load(key_file)
+
+    environment = config[opts.environment] if opts.environment in config else None
+
+    if not environment:
+        print "Error: environment " + opts.environment + " not present in " + configFile
         exit(1)
 
-    if not opts.keypath:
-        keypath = "../keys.json"
-    else:
-        keypath = opts.keypath
+    passkey = str(environment['passkey']).strip('"')
+    secretKey = str(environment['secret']).strip('"')
+    url = str(environment['url']).strip('"')
 
-    if not os.path.isfile(keypath):
-        exit("Key file \"" + keypath + "\" does not exist")
-    else:
-        with open(keypath) as key_file:
-            keys = json.load(key_file)
-
-    if opts.destination:
-        if not os.path.isdir(opts.destination):
-            exit("Destination directory \""+opts.destination + "\" does not exist")
-        dest = opts.destination.rstrip('\\')
-    else:
-        dest = "."
-
-    xApiKey = json.dumps(keys[opts.environment]["x-api-key"]).strip('"')
-    sharedKey = json.dumps(keys[opts.environment]["secret"]).strip('"')
-    timestamp = str(round(time.time() * 1000))
-    path= path="path={0}".format(opts.manifest)
-    message = "{0}&x-api-key={1}&timestamp={2}".format(path, xApiKey, timestamp)
-    url = "https://{0}/v1/dce/data?{1}".format(DCE_HOSTS[opts.environment], path)
-    # cd to destination folder
-    os.chdir(dest)
-
-    signed = hmac.new(sharedKey, message, hashlib.sha256).hexdigest()
-    headers = {'x-api-key': xApiKey, 'BV-DCE-ACCESS-SIGN': signed, 'BV-DCE-ACCESS-TIMESTAMP': timestamp}
-    print "Start to download..."
-    resp = requests.get(url, headers=headers, timeout=60, allow_redirects=True)
+    print "Fetching manifests..."
+    resp = doHttpGet(url, passkey, secretKey, None)
     if resp.status_code != requests.codes.ok:
+        print "Error: could not download manifests (" + str(resp.status_code) + ")"
         exit(resp.content)
 
-    decoded_json = json.loads(resp.content)
+    manifest_json = json.loads(resp.content)
 
-    for majorkey, subdict in decoded_json.iteritems():
-        if opts.category and opts.category != majorkey:
-            continue
-        print "####################### Downloading " + majorkey + " ######################"
-        # create directory if not exist
-        if not os.path.exists(majorkey):
-            os.makedirs(majorkey)
-        # cd in folder
-        os.chdir(majorkey)
+    # TODO: support partials
+    manifest_path = getManifestForDate(manifest_json['manifests'], version, date, 'fulls')
+    if not manifest_path:
+        print "Error: did not find " + date + " in downloaded manifests"
+        exit(1)
 
-        for subkey, value in subdict.iteritems():
-            timestamp = str(round(time.time() * 1000))
-            path="path={0}".format(subkey)
-            message = "{0}&x-api-key={1}&timestamp={2}".format(path, xApiKey, timestamp)
-            url = "https://{0}/v1/dce/data?{1}".format(DCE_HOSTS[opts.environment], path)
-            signed = hmac.new(sharedKey, message, hashlib.sha256).hexdigest()
-            headers = {'x-api-key': xApiKey, 'BV-DCE-ACCESS-SIGN': signed, 'BV-DCE-ACCESS-TIMESTAMP': timestamp}
+    # We have the manifest file path for the requested date and version. Download it and process.
 
-            print "Downloading " + subkey + " to " + dest + "/" + majorkey + "/" +subkey.split('/')[-1]
-            r = requests.get(url, headers=headers, timeout=60, allow_redirects=True)
-            if r.status_code != requests.codes.ok:
-                print r.content
-            else:
-                with open(subkey.split('/')[-1], "wb") as file:
-                    file.write(r.content)
+    print "Fetching " + manifest_path + "..."
+    resp = doHttpGet(url, passkey, secretKey, manifest_path)
+    if resp.status_code != requests.codes.ok:
+        print "Error: could not download " + manifest_path + " (" + str(resp.status_code) + ")"
+        exit(resp.content)
 
-                print "Done."
-        # cd back to parent
-        os.chdir("..")
+    file_type_map = json.loads(resp.content)
+
+    print "Downloading category \"" + category + "\"..."
+
+    # Iterate through all category types, processing the category we want
+    for file_type in file_type_map.keys():
+        if file_type == category or category == "all":
+            for file_object in file_type_map[file_type]:
+                path = file_object['path']
+                print "Fetching " + path + " ..."
+
+                resp = doHttpGet(url, passkey, secretKey, path)
+                if resp.status_code != requests.codes.ok:
+                    print "Error: could not download " + path + " (" + str(resp.status_code) + ")"
+                    exit(resp.content)
+
+                saveFile(destination, path, resp.content)
+
+    exit(0)

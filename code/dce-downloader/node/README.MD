@@ -1,10 +1,10 @@
-# DCE Downloader Tools in Python
+# DCE Downloader Tools in Node.js
 
-Two Python scripts files are provided to get data from the Bazaarvoice Displayable Content Export service. Please refer to [documentation](https://developer.bazaarvoice.com/displayable-content-export) for details.
+Two Node.js scripts files are provided to get data from the Bazaarvoice Displayable Content Export service. Please refer to [documentation](https://developer.bazaarvoice.com/displayable-content-export) for details.
 
 ## Prerequisite
-1. You should have Python v2.7.10 or later installed.
-2. You should have requests installed
+1. You should have Node.js 5.0 or later installed.
+2. You should install the package dependencies
 3. You must have a config.json file (see [Common Prerequisites](../README.MD#Common-Prerequisites))
     
 ## Development
@@ -16,52 +16,26 @@ To get some background on working with Python, check out [this blog post](http:/
 In your terminal, execute the following:
 
 ```bash
-# Install python
-brew install python
-
-# Install pip
-sudo easy_install pip
-
-# Install virtualenv and virtualenvwrapper
-pip install virtualenv
-pip install virtualenvwrapper
-
-# Create a folder to store your virtualenvs
-mkdir ~/.virtualenvs
+# Install node
+brew update
+brew install node
 ```
 
-Using your favorite text editor, add the following to your .bashrc (if you use something other than bash, adjust accordingly):
+Install DCE package dependencies:
 
 ```bash
-# Python Virtual Environment Settings
-export WORKON_HOME=$HOME/.virtualenvs
-if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
-    source /usr/local/bin/virtualenvwrapper.sh;
-fi;
+cd code/dce-downloader/node
+npm install --save
 ```
 
-Save and close your ~/.bashrc. Then execute the following:
-
-```bash
-# Create the project virtual environment
-source ~/.bashrc
-mkvirtualenv -p /usr/bin/python2.7 dce
-workon dce
-
-# From the dce-tools top-level directory, install the Python Requirements:
-cd code/dce-downloader/python
-pip install -r ./requirements.txt
-add2virtualenv .
-```
-
-## dce.py
+## dce.js
 
 This script is used to get dates/versions available and get individual files. This demonstrates the basic usage of the Displayable Content Export, including how to create the HMAC signature, the HTTP headers to include, and the manifest list and manifest file contents.
 
 Usage:
 
   ```
-  dce.py -env=<env> -dest=<dest> -path=<path> -config=<config>
+  dce.js --env <env> --path <path> --dest <dest> --config <config>
 
   <config>   : config file (optional, defaults to ../config.json) 
   <env>      : environment in config file to use (required)
@@ -72,19 +46,19 @@ Usage:
 1. Get available command-line options
 
    ```
-   dce.py
+   dce.js
    ```
    
 1. Get manifests (dates/versions) available
 
    ```
-   dce.py -env=<env> -config=<config>
+   dce.js --env <env> --config <config>
    ```
    
    Example:
    
    ```
-   dce.py -env=stg
+   dce.js --env stg
    ```
      
    Example response:
@@ -130,20 +104,20 @@ Usage:
             ],
             "version": "v2"
         }
-     ]
+      ]
    }
    ```
      
 1. Get individual file (output to console)
 
    ```
-   dce.py -env=<env> -path=<path> -config=<config>
+   dce.js --env <env> --path <path> --config <config>
    ```
    
    Example:
    
    ```
-   dce.py -env=stg -path=/manifests/full/2017-06-01/v2/manifest.json
+   dce.js --env stg --path /manifests/full/2017-06-01/v2/manifest.json
    ```
      
    Example response:
@@ -199,13 +173,13 @@ Usage:
 1. Save individual file to local file. This can be used for individual manifest files as well as content files listed in a manifest.
 
    ```
-   dce.py -env=<env> -path=<path> -dest=<dest> -config=<config>
+   dce.js --env <env> --path <path> --dest <dest> --config <config>
    ```
 
    Example:
 
    ```
-   dce.py -env=stg -path=/manifests/full/2017-06-01/v2/manifest.json -dest=output
+   dce.js --env stg --path /manifests/full/2017-06-01/v2/manifest.json --dest output
    ```
 
    Example response:
@@ -215,21 +189,21 @@ Usage:
    Saving as output/manifests/full/2017-06-01/v2/manifest.json
    ```
    
-## dcebulk.py
+## dcebulk.js
 
 This script is used to get files in bulk, for a given date and version.
 
 Usage:
 
   ```
-  dcebulk.py -env=<env> -date=<date> -dest=<dest> -version=<version> -type=<type> -config=<config>
+  dcebulk.js --env <env> --date <date> --dest <dest> --version <version> --type <type> --config <config>
 
   <config>  : config file (defaults to ../config.json) 
-  <env>     : environment in config file to use
-  <date>    : date of data to fetch, in YYYY-mm-dd format, eg., 2017-07-04
+  <env>     : environment in config file to use (required)
+  <date>    : date of data to fetch, in YYYY-mm-dd format, eg., 2017-07-04 (required)
   <type>    : type of data, eg., reviews, comments, products, authors, categories, configuration, 
                  review-parent-keys (defaults to all)
-  <dest>    : local directory in which to save the downloaded data files
+  <dest>    : local directory in which to save the downloaded data files (required)
   <version> : version ID of data files (defaults to v2)
   ```
  
@@ -239,13 +213,13 @@ Examples
 1. Get available command-line options
 
    ```
-   dcebulk.py
+   dcebulk.js
    ```
 
 1. Get all data on specific date
 
    ```
-   dcebulk.py -env=stg -date=2016-08-22 -dest=output
+   dcebulk.js --env stg --date 2016-08-22 --dest output
    ```
     
    This will download all data of v1 on 2016-08-22 into local directory ```output```.
@@ -253,7 +227,7 @@ Examples
 1. Get v2 'reviews' on specific date
   
    ```
-   dcebulk.py -env=stg -date=2016-08-22 -dest=test -version=v2 -type=reviews
+   dcebulk.js --env stg --date 2016-08-22 --dest test --version v2 --type reviews
    ```
     
    This will download all reviews of v2 on 2016-08-22 into local directory ```test```.

@@ -1,0 +1,13 @@
+{
+  "name": "dce-tools",
+  "version": "1.0.0",
+  "description": "Displayable Content Export demo tool",
+  "author": "Bazaarvoice",
+  "homepage": "https://developer.bazaarvoice.com",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "commander": "^2.9.0",
+    "request": "^2.81.0"
+  },
+  "private": true
+}

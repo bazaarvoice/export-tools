@@ -1,0 +1,14 @@
+{
+"stg":
+    {
+        "passkey": "your_passkey_here",
+        "secret": "your_secret_key_here",
+        "url" : "https://stg-api.bazaarvoice.com/dce/v3/data"
+    },
+"prod":
+    {
+        "passkey": "your_passkey_here",
+        "secret": "your_secret_key_here",
+        "url" : "https://api.bazaarvoice.com/dce/v3/data"
+    }
+}
