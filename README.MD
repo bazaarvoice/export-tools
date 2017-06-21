@@ -1,8 +1,8 @@
 # DCE Tools
 
-This project provides Bazaarvoice Displayble Content Export tools written in different languages (Node.js, Python, etc.) to help developers experiment with the Displayalbe Content Export and to see what the response would be like. These example applications are meant as both a reference implementation of how to use the Bazaarvoice API, as well to get an idea of the format of the retrieved data.
+This project provides Bazaarvoice Displayable Content Export tools written in different languages (Node.js, Python, etc.) to help developers experiment with the Displayable Content Export and to see what the response would be like. These example applications are meant as both a reference implementation of how to use the Bazaarvoice API, as well to get an idea of the format of the retrieved data.
 
-To see what Displayble Content Export is, please refer to the Bazaarvoice [documentation](https://developer.bazaarvoice.com/displayable-content-export) for details.
+To see what Displayable Content Export is, please refer to the Bazaarvoice [documentation](https://developer.bazaarvoice.com/displayable-content-export) for details.
 
 ## License
 See [LICENSE](LICENSE.md)
@@ -15,4 +15,6 @@ The reference languages contained in this project are simple examples of how one
 [dce-downloader](code/dce-downloader/README.MD)
 
 ## Contributing
-TBD
+Found a bug or missing feature? Please open an issue!
+
+Send your feedback. Send your pull requests. All contributions are appreciated, especially porting to other programming languages!

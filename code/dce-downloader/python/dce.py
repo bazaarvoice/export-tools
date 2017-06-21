@@ -97,6 +97,7 @@ if __name__ == '__main__':
 
     resp = doHttpGet(url, passkey, secretKey, path)
     if resp.status_code != requests.codes.ok:
+        print "Error: " + str(resp.status_code) + " " + str(resp.reason)
         exit(resp.content)
 
     # Write to file, if requested to do so.

@@ -5,9 +5,9 @@
   "author": "Bazaarvoice",
   "homepage": "https://developer.bazaarvoice.com",
   "dependencies": {
-    "bluebird": "^3.5.0",
     "commander": "^2.9.0",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
   },
   "private": true
 }
