@@ -9,7 +9,6 @@ import time
 import hmac
 import hashlib
 import requests
-import logging
 import json
 
 # Create hmac signature
@@ -39,36 +38,77 @@ def doHttpGet(url, passkey, secretKey, path):
     resp = requests.get(url, params=params, headers=headers, timeout=60, allow_redirects=True, stream=True)
     return resp
 
-def getManifestForDate(manifests, version, date, type):
+def getManifestForDate(manifests, version, date, dataType):
     for manifest_record in manifests:
-        if manifest_record['version'] == version and type in manifest_record:
-            for item in manifest_record[type]:
+        if manifest_record['version'] == version and dataType in manifest_record:
+            for item in manifest_record[dataType]:
                 if item['date'] == date:
                     return item['path']
 
     return None
 
 def saveFile(dest, path, content):
-    file = dest + path
-    print "Saving as " + file
+    file_ = dest + path
+    print "Saving as " + file_
 
-    dirname = os.path.dirname(file)
-    if not os.path.exists(dirname):
-        os.makedirs(dirname)
+    dirname_ = os.path.dirname(file_)
+    if not os.path.exists(dirname_):
+        os.makedirs(dirname_)
 
-    with open(file, "wb") as file:
-        file.write(content)
+    with open(file_, "wb") as file_:
+        file_.write(content)
+
+def getFiles(manifests, version, date, category, dataType):
+    manifest_path = getManifestForDate(manifests, version, date, dataType)
+    if not manifest_path:
+        print "Warning: Did not find " + date + " in downloaded manifests for " + dataType
+        return False
+
+    # We have the manifest file path for the requested date and version. Download it and process.
+
+    print "Fetching " + manifest_path + "..."
+    resp = doHttpGet(url, passkey, secretKey, manifest_path)
+    if resp.status_code != requests.codes.ok:
+        print "Error: could not download " + manifest_path + " (" + str(resp.status_code) + ")"
+        exit(resp.content)
+
+    file_type_map = json.loads(resp.content)
+
+    if category == "all":
+        print "Downloading all categories..."
+    else:
+        print "Downloading category \"" + category + "\"..."
+
+    # Iterate through all category types, processing the category we want
+    for file_type in file_type_map.keys():
+        if file_type == category or category == "all":
+            for file_object in file_type_map[file_type]:
+                path = file_object['path']
+                print "Fetching " + path + " ..."
+
+                resp = doHttpGet(url, passkey, secretKey, path)
+                if resp.status_code != requests.codes.ok:
+                    print "Error: could not download " + path + " (" + str(resp.status_code) + ")"
+                    exit(resp.content)
+
+                saveFile(destination, path, resp.content)
+
+    return True
 
 # Main part
 if __name__ == '__main__':
     # Setting script parameters and variables
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('-config',  dest='configFile', help='path to configuration (default is ../config.json)')
-    p.add_argument('-env',  dest='environment', help='environment of DCE service (must be present in config file)')
-    p.add_argument('-date', dest='date', help='date of files to download, in YYYY-mm-dd format')
-    p.add_argument('-dest', dest='destination', help='destination folder to store downloaded data; ./output is used if not present')
-    p.add_argument('-type', dest='category', help='type of files, like reviews, questions... (defaults to all types)')
-    p.add_argument('-version', dest='version', help='version of data to retrieve (defaults to v2)')
+    p.add_argument('--config',  dest='configFile', help='path to configuration (default is ../config.json)')
+    p.add_argument('--env',  dest='environment', required=True, help='environment of DCE service (must be present in config file)')
+    p.add_argument('--date', dest='date', required=True, help='date of files to download, in YYYY-mm-dd format')
+    p.add_argument('--dest', dest='destination', required=True, help='destination folder to store downloaded data')
+    p.add_argument('--type', dest='category', help='type of files, like reviews, questions... (defaults to all types)')
+    p.add_argument('--version', dest='version', help='version of data to retrieve (defaults to v2)')
+    p.add_argument('--fulls', dest='fulls', action='store_true', help='Retrieve fulls')
+    p.add_argument('--no-fulls', dest='fulls', action='store_true', help='Retrieve fulls')
+    p.add_argument('--incrementals', dest='incrementals', action='store_true', help='Do not retrieve incrementals')
+    p.add_argument('--no-incrementals', dest='incrementals', action='store_true', help='Do not retrieve incrementals')
     opts = p.parse_args()
 
     # Determine operation mode or print help
@@ -81,6 +121,11 @@ if __name__ == '__main__':
     date = opts.date
     category = opts.category if opts.category else "all"
     destination = opts.destination.rstrip('\\') if opts.destination else "./output"
+    fulls = opts.fulls
+    incrementals = opts.incrementals
+
+    if not fulls and not incrementals:
+        exit("Must specify one or both of [--fulls, --incrementals]")
 
     if not os.path.isfile(configFile):
         exit("Config file \"" + configFile + "\" does not exist")
@@ -105,37 +150,12 @@ if __name__ == '__main__':
         exit(resp.content)
 
     manifest_json = json.loads(resp.content)
+    manifests = manifest_json['manifests']
 
-    # TODO: support partials
-    manifest_path = getManifestForDate(manifest_json['manifests'], version, date, 'fulls')
-    if not manifest_path:
-        print "Error: did not find " + date + " in downloaded manifests"
-        exit(1)
+    if fulls:
+        getFiles(manifests, version, date, category, 'fulls')
 
-    # We have the manifest file path for the requested date and version. Download it and process.
-
-    print "Fetching " + manifest_path + "..."
-    resp = doHttpGet(url, passkey, secretKey, manifest_path)
-    if resp.status_code != requests.codes.ok:
-        print "Error: could not download " + manifest_path + " (" + str(resp.status_code) + ")"
-        exit(resp.content)
-
-    file_type_map = json.loads(resp.content)
-
-    print "Downloading category \"" + category + "\"..."
-
-    # Iterate through all category types, processing the category we want
-    for file_type in file_type_map.keys():
-        if file_type == category or category == "all":
-            for file_object in file_type_map[file_type]:
-                path = file_object['path']
-                print "Fetching " + path + " ..."
-
-                resp = doHttpGet(url, passkey, secretKey, path)
-                if resp.status_code != requests.codes.ok:
-                    print "Error: could not download " + path + " (" + str(resp.status_code) + ")"
-                    exit(resp.content)
-
-                saveFile(destination, path, resp.content)
+    if incrementals:
+        getFiles(manifests, version, date, category, 'incrementals')
 
     exit(0)

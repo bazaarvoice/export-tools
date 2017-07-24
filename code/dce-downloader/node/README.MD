@@ -9,7 +9,7 @@ Two Node.js scripts files are provided to get data from the Bazaarvoice Displaya
     
 ## Development
 
-To get some background on working with Python, check out [this blog post](http://www.dabapps.com/blog/introduction-to-pip-and-virtualenv-python/) and [this virtualenv doc](http://docs.python-guide.org/en/latest/dev/virtualenvs/#virtualenvwrapper).
+To get some background on working with Node.js, check out [Setting up a Node development environment](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/development_environment).
 
 ### MacOS Environment
 
@@ -25,7 +25,7 @@ Install DCE package dependencies:
 
 ```bash
 cd code/dce-downloader/node
-npm install --save
+npm install
 ```
 
 ## dce.js

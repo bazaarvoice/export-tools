@@ -40,7 +40,7 @@ def doHttpGet(url, passkey, secretKey, path):
     params = { 'path' : path } if path else {}
 
     if path:
-        print "Downloading " + path;
+        print "Downloading " + path
     else:
         print "Retrieving manifests"
 
@@ -48,25 +48,25 @@ def doHttpGet(url, passkey, secretKey, path):
     return resp
 
 def saveFile(dest, path, content):
-    file = dest + path
-    print "Saving as " + file
+    file_ = dest + path
+    print "Saving as " + file_
 
-    dirname = os.path.dirname(file)
-    if not os.path.exists(dirname):
-        os.makedirs(dirname)
+    dirname_ = os.path.dirname(file_)
+    if not os.path.exists(dirname_):
+        os.makedirs(dirname_)
 
-    with open(file, "wb") as file:
-        file.write(content)
+    with open(file, "wb") as file_:
+        file_.write(content)
 
 
 # Main part
 if __name__ == '__main__':
     # Setting script parameters and variables
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('-config',  dest='configFile', help='path to configuration (default is ../config.json)')
-    p.add_argument('-env',  dest='environment', help='environment of DCE service (must be present in config file)')
-    p.add_argument('-path', dest='path', help='DCE file')
-    p.add_argument('-dest', dest='destination', help='destination folder to store downloaded data')
+    p.add_argument('--config',  dest='configFile', help='path to configuration (default is ../config.json)')
+    p.add_argument('--env',  dest='environment', required=True, help='environment of DCE service (must be present in config file)')
+    p.add_argument('--path', dest='path', help='DCE file')
+    p.add_argument('--dest', dest='destination', help='destination folder to store downloaded data')
     opts = p.parse_args()
 
     # Determine operation mode or print help
@@ -112,7 +112,7 @@ if __name__ == '__main__':
         try:
             # Try to pretty print it, in case it's valid json
 
-            parsed = json.loads(data);
+            parsed = json.loads(data)
             print json.dumps(parsed, indent=4, sort_keys=True)
 
         except Exception as e:
@@ -121,5 +121,5 @@ if __name__ == '__main__':
             print data
 
     else:
-        parsed = json.loads(resp.content);
+        parsed = json.loads(resp.content)
         print json.dumps(parsed, indent=4, sort_keys=True)
