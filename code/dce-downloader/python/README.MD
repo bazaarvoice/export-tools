@@ -4,7 +4,7 @@ Two Python scripts files are provided to get data from the Bazaarvoice Displayab
 
 ## Prerequisite
 1. You should have Python v2.7.10 or later installed.
-2. You should have requests installed
+2. You should have all dependencies installed (as listed in [requirements.txt](requirements.txt))
 3. You must have a config.json file (see [Common Prerequisites](../README.MD#Common-Prerequisites))
     
 ## Development
@@ -61,7 +61,7 @@ This script is used to get dates/versions available and get individual files. Th
 Usage:
 
   ```
-  dce.py -env=<env> -dest=<dest> -path=<path> -config=<config>
+  dce.py --env <env> --dest <dest> --path <path> --config <config>
 
   <config>   : config file (optional, defaults to ../config.json) 
   <env>      : environment in config file to use (required)
@@ -78,7 +78,7 @@ Usage:
 1. Get manifests (dates/versions) available
 
    ```
-   dce.py -env=<env> -config=<config>
+   dce.py --env <env> --config <config>
    ```
    
    Example:
@@ -137,13 +137,13 @@ Usage:
 1. Get individual file (output to console)
 
    ```
-   dce.py -env=<env> -path=<path> -config=<config>
+   dce.py --env <env> --path <path> --config <config>
    ```
    
    Example:
    
    ```
-   dce.py -env=stg -path=/manifests/full/2017-06-01/v2/manifest.json
+   dce.py --env stg --path/manifests/full/2017-06-01/v2/manifest.json
    ```
      
    Example response:
@@ -199,13 +199,13 @@ Usage:
 1. Save individual file to local file. This can be used for individual manifest files as well as content files listed in a manifest.
 
    ```
-   dce.py -env=<env> -path=<path> -dest=<dest> -config=<config>
+   dce.py --env <env> --path <path> --dest <dest> --config <config>
    ```
 
    Example:
 
    ```
-   dce.py -env=stg -path=/manifests/full/2017-06-01/v2/manifest.json -dest=output
+   dce.py --env stg --path /manifests/full/2017-06-01/v2/manifest.json --dest output
    ```
 
    Example response:
@@ -222,7 +222,7 @@ This script is used to get files in bulk, for a given date and version.
 Usage:
 
   ```
-  dcebulk.py -env=<env> -date=<date> -dest=<dest> -version=<version> -type=<type> -config=<config>
+  dcebulk.py --env <env> --date <date> --dest <dest> --v <version> --type <type> --config <config> --fulls --incrementals
 
   <config>  : config file (defaults to ../config.json) 
   <env>     : environment in config file to use
@@ -242,18 +242,18 @@ Examples
    dcebulk.py
    ```
 
-1. Get all data on specific date
+1. Get all 'fulls' data on specific date
 
    ```
-   dcebulk.py -env=stg -date=2016-08-22 -dest=output
+   dcebulk.py --env stg --date 2016-08-22 --dest output --fulls
    ```
     
-   This will download all data of v1 on 2016-08-22 into local directory ```output```.
+   This will download all 'fulls' data of v1 on 2016-08-22 into local directory ```output```.
         
-1. Get v2 'reviews' on specific date
+1. Get v2 'incrementals' of type 'reviews' on specific date
   
    ```
-   dcebulk.py -env=stg -date=2016-08-22 -dest=test -version=v2 -type=reviews
+   dcebulk.py --env stg --date 2016-08-22 --dest test --version v2 --type reviews --incrementals
    ```
     
-   This will download all reviews of v2 on 2016-08-22 into local directory ```test```.
+   This will download all 'incrementals' reviews of v2 on 2016-08-22 into local directory ```test```.

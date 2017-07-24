@@ -9,11 +9,8 @@ import time
 import hmac
 import hashlib
 import requests
-import logging
 import json
 import zlib
-
-#logging.basicConfig(level=logging.DEBUG)
 
 # Create hmac signature
 def createSignature(passkey, secretKey, timestamp, path):

@@ -58,10 +58,10 @@ def saveFile(dest, path, content):
     with open(file_, "wb") as file_:
         file_.write(content)
 
-def getFiles(manifests, version, date, category, dataType):
+def getFiles(manifests, version, date, category, destination, dataType):
     manifest_path = getManifestForDate(manifests, version, date, dataType)
     if not manifest_path:
-        print "Warning: Did not find " + date + " in downloaded manifests for " + dataType
+        print "Warning: Did not find \"" + date + "\" for version=\"" + version + "\" type=\"" + dataType + "\" in downloaded manifests"
         return False
 
     # We have the manifest file path for the requested date and version. Download it and process.
@@ -104,11 +104,9 @@ if __name__ == '__main__':
     p.add_argument('--date', dest='date', required=True, help='date of files to download, in YYYY-mm-dd format')
     p.add_argument('--dest', dest='destination', required=True, help='destination folder to store downloaded data')
     p.add_argument('--type', dest='category', help='type of files, like reviews, questions... (defaults to all types)')
-    p.add_argument('--version', dest='version', help='version of data to retrieve (defaults to v2)')
+    p.add_argument('--v', dest='version', help='version of data to retrieve (defaults to v2)')
     p.add_argument('--fulls', dest='fulls', action='store_true', help='Retrieve fulls')
-    p.add_argument('--no-fulls', dest='fulls', action='store_true', help='Retrieve fulls')
-    p.add_argument('--incrementals', dest='incrementals', action='store_true', help='Do not retrieve incrementals')
-    p.add_argument('--no-incrementals', dest='incrementals', action='store_true', help='Do not retrieve incrementals')
+    p.add_argument('--incrementals', dest='incrementals', action='store_true', help='Retrieve incrementals')
     opts = p.parse_args()
 
     # Determine operation mode or print help
@@ -153,9 +151,9 @@ if __name__ == '__main__':
     manifests = manifest_json['manifests']
 
     if fulls:
-        getFiles(manifests, version, date, category, 'fulls')
+        getFiles(manifests, version, date, category, destination, 'fulls')
 
     if incrementals:
-        getFiles(manifests, version, date, category, 'incrementals')
+        getFiles(manifests, version, date, category, destination, 'incrementals')
 
     exit(0)

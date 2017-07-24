@@ -3,7 +3,7 @@
 Two Node.js scripts files are provided to get data from the Bazaarvoice Displayable Content Export service. Please refer to [documentation](https://developer.bazaarvoice.com/displayable-content-export) for details.
 
 ## Prerequisite
-1. You should have Node.js 5.0 or later installed.
+1. You should have Node.js 6.0 or later installed.
 2. You should install the package dependencies
 3. You must have a config.json file (see [Common Prerequisites](../README.MD#Common-Prerequisites))
     
@@ -13,17 +13,14 @@ To get some background on working with Node.js, check out [Setting up a Node dev
 
 ### MacOS Environment
 
-In your terminal, execute the following:
+It is recommended that you use nvm to install and manage different versions of node.js. 
 
-```bash
-# Install node
-brew update
-brew install node
+Refer to [Installing Node.js Tutorial: Using nvm](https://nodesource.com/blog/installing-node-js-tutorial-using-nvm-on-mac-os-x-and-ubuntu) for installing on MacOS, particularly "Step 0: The Quick Guide".
+
+It is recommended that you 'nvm install' and 'nvm use' the latest LTS version.
+
+### Install Node Packages
 ```
-
-Install DCE package dependencies:
-
-```bash
 cd code/dce-downloader/node
 npm install
 ```
@@ -196,7 +193,7 @@ This script is used to get files in bulk, for a given date and version.
 Usage:
 
   ```
-  dcebulk.js --env <env> --date <date> --dest <dest> --version <version> --type <type> --config <config>
+  dcebulk.js --env <env> --date <date> --dest <dest> --v <version> --type <type> --config <config> --fulls --incrementals
 
   <config>  : config file (defaults to ../config.json) 
   <env>     : environment in config file to use (required)
@@ -216,18 +213,18 @@ Examples
    dcebulk.js
    ```
 
-1. Get all data on specific date
+1. Get all 'fulls' data on specific date
 
    ```
-   dcebulk.js --env stg --date 2016-08-22 --dest output
+   dcebulk.js --env stg --date 2016-08-22 --dest output --fulls
    ```
     
-   This will download all data of v1 on 2016-08-22 into local directory ```output```.
+   This will download all 'fulls' data of v1 on 2016-08-22 into local directory ```output```.
         
-1. Get v2 'reviews' on specific date
+1. Get v2 'incrementals' of type 'reviews' on specific date
   
    ```
-   dcebulk.js --env stg --date 2016-08-22 --dest test --version v2 --type reviews
+   dcebulk.js --env stg --date 2016-08-22 --dest test --version v2 --type reviews --incrementals
    ```
     
-   This will download all reviews of v2 on 2016-08-22 into local directory ```test```.
+   This will download all 'incrementals' reviews of v2 on 2016-08-22 into local directory ```test```.

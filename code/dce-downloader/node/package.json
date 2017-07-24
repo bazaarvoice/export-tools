@@ -5,9 +5,10 @@
   "author": "Bazaarvoice",
   "homepage": "https://developer.bazaarvoice.com",
   "dependencies": {
-    "commander": "^2.9.0",
+    "argparse": "^1.0.9",
     "request": "^2.81.0",
-    "request-promise": "^4.2.1"
+    "request-promise": "^4.2.1",
+    "eslint": "^4.2.0"
   },
   "private": true
 }
