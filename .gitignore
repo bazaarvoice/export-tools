@@ -1,4 +1,8 @@
 .git
 .idea
 dce-tools.iml
-keys.json
+config.json
+manifest.json
+output
+node_modules
+package-lock.json

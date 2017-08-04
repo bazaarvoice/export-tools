@@ -1,0 +1,14 @@
+{
+  "name": "dce-tools",
+  "version": "1.0.0",
+  "description": "Displayable Content Export demo tool",
+  "author": "Bazaarvoice",
+  "homepage": "https://developer.bazaarvoice.com",
+  "dependencies": {
+    "argparse": "^1.0.9",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
+    "eslint": "^4.2.0"
+  },
+  "private": true
+}
