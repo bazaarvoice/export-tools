@@ -49,9 +49,11 @@ dce.doHttpGet(environment.url, environment.passkey, environment.secret, path)
       // gzip-style decompression
       zlib.gunzip(response.body, function (err, result) {
         if (err) {
-          console.log(response.body);
+            console.log('could not gunzip');
         } else {
-          console.log(JSON.stringify(result, null, 4));
+            // Body was an octet stream. We need to convert result to String
+            // then do a JSON stringify.
+            console.log(JSON.stringify(result.toString(), null, 4));
         }
       });
 
