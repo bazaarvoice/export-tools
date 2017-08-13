@@ -48,14 +48,14 @@ def getManifestForDate(manifests, version, date, dataType):
     return None
 
 def saveFile(dest, path, content):
-    file_ = dest + path
-    print "Saving as " + file_
+    filename_ = dest + path
+    print "Saving as " + filename_
 
-    dirname_ = os.path.dirname(file_)
+    dirname_ = os.path.dirname(filename_)
     if not os.path.exists(dirname_):
         os.makedirs(dirname_)
 
-    with open(file_, "wb") as file_:
+    with open(filename_, "wb") as file_:
         file_.write(content)
 
 def getFiles(manifests, version, date, category, destination, dataType):
