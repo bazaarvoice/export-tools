@@ -18,7 +18,7 @@ For each of the reference tools, the following prerequisites apply:
     {
         "passkey": "your_passkey_here",
         "secret": "your_secret_key_here",
-        "url" : "https://stg-api.bazaarvoice.com/dce/v3/data"
+        "url" : "https://stg.api.bazaarvoice.com/dce/v3/data"
     },
 "prod":
     {
