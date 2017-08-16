@@ -45,14 +45,14 @@ def doHttpGet(url, passkey, secretKey, path):
     return resp
 
 def saveFile(dest, path, content):
-    file_ = dest + path
-    print "Saving as " + file_
+    filename_ = dest + path
+    print "Saving as " + filename_
 
-    dirname_ = os.path.dirname(file_)
+    dirname_ = os.path.dirname(filename_)
     if not os.path.exists(dirname_):
         os.makedirs(dirname_)
 
-    with open(file, "wb") as file_:
+    with open(filename_, "wb") as file_:
         file_.write(content)
 
 
