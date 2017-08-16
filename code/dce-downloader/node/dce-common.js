@@ -80,7 +80,10 @@ module.exports = {
       maxRedirects: 2,
       headers: this.buildBVHeaders(passkey, signature, timestamp),
       qs: path ? { path: path } : {},
-      resolveWithFullResponse: true
+      resolveWithFullResponse: true,
+
+      // If we're getting a gz file from DCE, we need to preserve it as binary
+      encoding : path && path.includes('gz') ? null : 'utf-8'
     });
 
   },
