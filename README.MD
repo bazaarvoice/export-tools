@@ -5,7 +5,7 @@ This project provides Bazaarvoice Displayable Content Export tools written in di
 To see what Displayable Content Export is, please refer to the Bazaarvoice [documentation](https://developer.bazaarvoice.com/displayable-content-export) for details.
 
 ## License
-See [LICENSE](LICENSE.md)
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
 ## Reference Tools
 The Displayable Content Export is an HTTP-protocol based API, and as such, is not bound to any specific programming language. Your application might be written in Java, javascript, Ruby, Python, Perl, C#, C++, or any other programming language in which HTTP requests can be made over the internet.
