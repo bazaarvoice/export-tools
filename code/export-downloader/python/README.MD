@@ -1,6 +1,6 @@
-# DCE Downloader Tools in Python
+# Export Downloader Tools in Python
 
-Two Python scripts files are provided to get data from the Bazaarvoice Displayable Content Export service. Please refer to [documentation](https://developer.bazaarvoice.com/displayable-content-export) for details.
+Two Python scripts files are provided to get data from the Bazaarvoice Export APIs. Please refer to [documentation](https://developer.bazaarvoice.com/products) for details.
 
 ## Prerequisite
 1. You should have Python v2.7.10 or later installed.
@@ -45,23 +45,23 @@ Save and close your ~/.bashrc. Then execute the following:
 ```bash
 # Create the project virtual environment
 source ~/.bashrc
-mkvirtualenv -p /usr/bin/python2.7 dce
-workon dce
+mkvirtualenv -p /usr/bin/python2.7 export
+workon export
 
-# From the dce-tools top-level directory, install the Python Requirements:
-cd code/dce-downloader/python
+# From the export-tools top-level directory, install the Python Requirements:
+cd code/export-downloader/python
 pip install -r ./requirements.txt
 add2virtualenv .
 ```
 
-## dce.py
+## exporter.py
 
-This script is used to get dates/versions available and get individual files. This demonstrates the basic usage of the Displayable Content Export, including how to create the HMAC signature, the HTTP headers to include, and the manifest list and manifest file contents.
+This script is used to get dates/versions available and get individual files. This demonstrates the basic usage of the Bazaarvoice Export APIs, including how to create the HMAC signature, the HTTP headers to include, and the manifest list and manifest file contents.
 
 Usage:
 
   ```
-  dce.py --env <env> --dest <dest> --path <path> --config <config>
+  exporter.py --env <env> --dest <dest> --path <path> --config <config>
 
   <config>   : config file (optional, defaults to ../config.json) 
   <env>      : environment in config file to use (required)
@@ -72,19 +72,19 @@ Usage:
 1. Get available command-line options
 
    ```
-   dce.py
+   exporter.py
    ```
    
 1. Get manifests (dates/versions) available
 
    ```
-   dce.py --env <env> --config <config>
+   exporter.py --env <env> --config <config>
    ```
    
    Example:
    
    ```
-   dce.py -env=stg
+   exporter.py -env=stg
    ```
      
    Example response:
@@ -137,13 +137,13 @@ Usage:
 1. Get individual file (output to console)
 
    ```
-   dce.py --env <env> --path <path> --config <config>
+   exporter.py --env <env> --path <path> --config <config>
    ```
    
    Example:
    
    ```
-   dce.py --env stg --path/manifests/full/2017-06-01/v2/manifest.json
+   exporter.py --env stg --path/manifests/full/2017-06-01/v2/manifest.json
    ```
      
    Example response:
@@ -199,13 +199,13 @@ Usage:
 1. Save individual file to local file. This can be used for individual manifest files as well as content files listed in a manifest.
 
    ```
-   dce.py --env <env> --path <path> --dest <dest> --config <config>
+   exporter.py --env <env> --path <path> --dest <dest> --config <config>
    ```
 
    Example:
 
    ```
-   dce.py --env stg --path /manifests/full/2017-06-01/v2/manifest.json --dest output
+   exporter.py --env stg --path /manifests/full/2017-06-01/v2/manifest.json --dest output
    ```
 
    Example response:
@@ -215,14 +215,14 @@ Usage:
    Saving as output/manifests/full/2017-06-01/v2/manifest.json
    ```
    
-## dcebulk.py
+## exporter-bulk.py
 
 This script is used to get files in bulk, for a given date and version.
 
 Usage:
 
   ```
-  dcebulk.py --env <env> --date <date> --dest <dest> --v <version> --type <type> --config <config> --fulls --incrementals
+  exporter-bulk.py --env <env> --date <date> --dest <dest> --v <version> --type <type> --config <config> --fulls --incrementals
 
   <config>  : config file (defaults to ../config.json) 
   <env>     : environment in config file to use
@@ -239,13 +239,13 @@ Examples
 1. Get available command-line options
 
    ```
-   dcebulk.py
+   exporter-bulk.py
    ```
 
 1. Get all 'fulls' data on specific date
 
    ```
-   dcebulk.py --env stg --date 2016-08-22 --dest output --fulls
+   exporter-bulk.py --env stg --date 2016-08-22 --dest output --fulls
    ```
     
    This will download all 'fulls' data of v1 on 2016-08-22 into local directory ```output```.
@@ -253,7 +253,7 @@ Examples
 1. Get v2 'incrementals' of type 'reviews' on specific date
   
    ```
-   dcebulk.py --env stg --date 2016-08-22 --dest test --version v2 --type reviews --incrementals
+   exporter-bulk.py --env stg --date 2016-08-22 --dest test --version v2 --type reviews --incrementals
    ```
     
    This will download all 'incrementals' reviews of v2 on 2016-08-22 into local directory ```test```.

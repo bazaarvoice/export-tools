@@ -50,8 +50,8 @@ module.exports = {
       .digest('hex');
   },
 
-  // Create required DCE headers
-  // Returns: dictionary of required DCE headers
+  // Create required Exporter headers
+  // Returns: dictionary of required Exporter headers
   buildBVHeaders: function buildBVHeaders(passkey, signature, timestamp) {
     return {
       'X-Bazaarvoice-Passkey': passkey,
@@ -60,7 +60,7 @@ module.exports = {
     };
   },
 
-  // Start a HTTP GET request to DCE
+  // Start a HTTP GET request to Exporter
   // Returns: Promise of a IncomingMessage object
   doHttpGet: function doHttpGet(uri, passkey, secret, path) {
     const timestamp = new Date().getTime();
@@ -82,7 +82,7 @@ module.exports = {
       qs: path ? { path: path } : {},
       resolveWithFullResponse: true,
 
-      // If we're getting a gz file from DCE, we need to preserve it as binary
+      // If we're getting a gz file from Exporter, we need to preserve it as binary
       encoding : path && path.includes('gz') ? null : 'utf-8'
     });
 

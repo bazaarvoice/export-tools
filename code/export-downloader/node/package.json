@@ -1,7 +1,7 @@
 {
-  "name": "dce-tools",
+  "name": "exporter-tools",
   "version": "1.0.0",
-  "description": "Displayable Content Export demo tool",
+  "description": "Exporter API demo tool",
   "author": "Bazaarvoice",
   "homepage": "https://developer.bazaarvoice.com",
   "dependencies": {

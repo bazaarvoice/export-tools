@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 """
-title: DCE Downloader
-description: Downloads DCE data from DCE service in BV
+title: Export Downloader -python
+description: Downloads exort data from Bazaarvoice export APIs
 """
+
 import argparse
 import os
 import time
@@ -61,8 +62,8 @@ if __name__ == '__main__':
     # Setting script parameters and variables
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--config',  dest='configFile', help='path to configuration (default is ../config.json)')
-    p.add_argument('--env',  dest='environment', required=True, help='environment of DCE service (must be present in config file)')
-    p.add_argument('--path', dest='path', help='DCE file')
+    p.add_argument('--env',  dest='environment', required=True, help='environment of export service (must be present in config file)')
+    p.add_argument('--path', dest='path', help='export file')
     p.add_argument('--dest', dest='destination', help='destination folder to store downloaded data')
     opts = p.parse_args()
 

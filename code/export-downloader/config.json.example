@@ -1,0 +1,14 @@
+{
+"stg":
+    {
+        "passkey": "{EXPORT-PRODUCT-PASSKEY}",
+        "secret": "{EXPORT-PRODUCT-SECRET}",
+        "url" : "https://stg.api.bazaarvoice.com/{EXPORT-PRODUCT-SHORTNAME}/{EXPORT-PRODUCT-VERSION}/data"
+    },
+"prod":
+    {
+        "passkey": "{EXPORT-PRODUCT-PASSKEY}",
+        "secret": "{EXPORT-PRODUCT-SECRET}",
+        "url" : "https://api.bazaarvoice.com/{EXPORT-PRODUCT-SHORTNAME}/{EXPORT-PRODUCT-VERSION}/data"
+    }
+}
