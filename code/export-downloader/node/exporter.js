@@ -2,18 +2,18 @@
 
 const ArgumentParser = require('argparse').ArgumentParser;
 const zlib = require('zlib');
-const dce = require('./dce-common.js');
+const exporter = require('./exporter-common.js');
 const errors = require('request-promise/errors');
 const util = require('util');
 
 const parser = new ArgumentParser({
   version: '1.0.0',
   addHelp: true,
-  description: 'DCE download tool'
+  description: 'Bazaarvoice Exporter download tool'
 });
 parser.addArgument(['--path'],
   {
-    help: 'DCE file path'
+    help: 'Exporter file path'
   });
 parser.addArgument(['--config' ],
   {
@@ -26,23 +26,23 @@ parser.addArgument(['--dest'],
   });
 parser.addArgument(['--env'],
   {
-    help: 'environment of DCE service (must be present in config file)',
+    help: 'environment of Exporter service (must be present in config file)',
     required: true
   });
 
 const options = parser.parseArgs();
-const config = dce.readConfig(options.config);
+const config = exporter.readConfig(options.config);
 
 const destination = options.dest;
 const path = options.path;
 
-const environment = dce.getEnvironment(config, options.env) || process.exit(1);
+const environment = exporter.getEnvironment(config, options.env) || process.exit(1);
 
-dce.doHttpGet(environment.url, environment.passkey, environment.secret, path)
+exporter.doHttpGet(environment.url, environment.passkey, environment.secret, path)
   .then(function(response) {
     if (destination) {
       // Write to file, if requested to do so.
-      dce.saveFile(destination, path || 'manifests', response.body);
+      exporter.saveFile(destination, path || 'manifests', response.body);
 
     } else if (path && path.includes('gz')) {
 
