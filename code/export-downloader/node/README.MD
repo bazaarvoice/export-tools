@@ -1,6 +1,6 @@
-# DCE Downloader Tools in Node.js
+# Export Downloader Tools in Node.js
 
-Two Node.js scripts files are provided to get data from the Bazaarvoice Displayable Content Export service. Please refer to [documentation](https://developer.bazaarvoice.com/displayable-content-export) for details.
+Two Node.js scripts files are provided to get data from the Bazaarvoice Export APIs . Please refer to the [documentation](https://developer.bazaarvoice.com/poducts) for details.
 
 ## Prerequisite
 1. You should have Node.js 6.0 or later installed.
@@ -21,18 +21,18 @@ It is recommended that you 'nvm install' and 'nvm use' the latest LTS version.
 
 ### Install Node Packages
 ```
-cd code/dce-downloader/node
+cd code/export-downloader/node
 npm install
 ```
 
-## dce.js
+## exporter.js
 
-This script is used to get dates/versions available and get individual files. This demonstrates the basic usage of the Displayable Content Export, including how to create the HMAC signature, the HTTP headers to include, and the manifest list and manifest file contents.
+This script is used to get dates/versions available and get individual files. This demonstrates the basic usage of the Bazaarvoice Exporter tools, including how to create the HMAC signature, the HTTP headers to include, and the manifest list and manifest file contents.
 
 Usage:
 
   ```
-  dce.js --env <env> --path <path> --dest <dest> --config <config>
+  exporter.js --env <env> --path <path> --dest <dest> --config <config>
 
   <config>   : config file (optional, defaults to ../config.json) 
   <env>      : environment in config file to use (required)
@@ -43,19 +43,19 @@ Usage:
 1. Get available command-line options
 
    ```
-   dce.js
+   exporter.js
    ```
    
 1. Get manifests (dates/versions) available
 
    ```
-   dce.js --env <env> --config <config>
+   exporter.js --env <env> --config <config>
    ```
    
    Example:
    
    ```
-   dce.js --env stg
+   exporter.js --env stg
    ```
      
    Example response:
@@ -108,13 +108,13 @@ Usage:
 1. Get individual file (output to console)
 
    ```
-   dce.js --env <env> --path <path> --config <config>
+   exporter.js --env <env> --path <path> --config <config>
    ```
    
    Example:
    
    ```
-   dce.js --env stg --path /manifests/full/2017-06-01/v2/manifest.json
+   exporter.js --env stg --path /manifests/full/2017-06-01/v2/manifest.json
    ```
      
    Example response:
@@ -170,13 +170,13 @@ Usage:
 1. Save individual file to local file. This can be used for individual manifest files as well as content files listed in a manifest.
 
    ```
-   dce.js --env <env> --path <path> --dest <dest> --config <config>
+   exporter.js --env <env> --path <path> --dest <dest> --config <config>
    ```
 
    Example:
 
    ```
-   dce.js --env stg --path /manifests/full/2017-06-01/v2/manifest.json --dest output
+   exporter.js --env stg --path /manifests/full/2017-06-01/v2/manifest.json --dest output
    ```
 
    Example response:
@@ -186,14 +186,14 @@ Usage:
    Saving as output/manifests/full/2017-06-01/v2/manifest.json
    ```
    
-## dcebulk.js
+## exporterbulk.js
 
 This script is used to get files in bulk, for a given date and version.
 
 Usage:
 
   ```
-  dcebulk.js --env <env> --date <date> --dest <dest> --v <version> --type <type> --config <config> --fulls --incrementals
+  exporterbulk.js --env <env> --date <date> --dest <dest> --v <version> --type <type> --config <config> --fulls --incrementals
 
   <config>  : config file (defaults to ../config.json) 
   <env>     : environment in config file to use (required)
@@ -201,22 +201,21 @@ Usage:
   <type>    : type of data, eg., reviews, comments, products, authors, categories, configuration, 
                  review-parent-keys (defaults to all)
   <dest>    : local directory in which to save the downloaded data files (required)
-  <version> : version ID of data files (defaults to v2)
+  <version> : version ID of data files
   ```
  
-
 Examples
     
 1. Get available command-line options
 
    ```
-   dcebulk.js
+   exporterbulk.js
    ```
 
 1. Get all 'fulls' data on specific date
 
    ```
-   dcebulk.js --env stg --date 2016-08-22 --dest output --fulls
+   exporterbulk.js --env stg --date 2016-08-22 --dest output --fulls
    ```
     
    This will download all 'fulls' data of v1 on 2016-08-22 into local directory ```output```.
@@ -224,7 +223,7 @@ Examples
 1. Get v2 'incrementals' of type 'reviews' on specific date
   
    ```
-   dcebulk.js --env stg --date 2016-08-22 --dest test --version v2 --type reviews --incrementals
+   exporterbulk.js --env stg --date 2016-08-22 --dest test --version v2 --type reviews --incrementals
    ```
     
    This will download all 'incrementals' reviews of v2 on 2016-08-22 into local directory ```test```.

@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 const ArgumentParser = require('argparse').ArgumentParser;
-const dce = require('./dce-common.js');
+const exporter = require('./exporter-common.js');
 const util = require('util');
 var errors = require('request-promise/errors');
 
 const parser = new ArgumentParser({
   version: '1.0.0',
   addHelp: true,
-  description: 'DCE bulk download tool'
+  description: 'Bazaarvoice Exporter bulk download tool'
 });
 parser.addArgument(['--config' ],
   {
@@ -21,7 +21,7 @@ parser.addArgument(['--dest'],
   });
 parser.addArgument(['--env'],
   {
-    help: 'environment of DCE service (must be present in config file)',
+    help: 'environment of Exporter service (must be present in config file)',
     required: true
   });
 parser.addArgument(['--date'],
@@ -36,8 +36,8 @@ parser.addArgument(['--type' ],
   });
 parser.addArgument(['--v' ],
   {
-    help: 'version of data to retrieve (defaults to v2)',
-    defaultValue: 'v2'
+    help: 'version of data to retrieve',
+    defaultValue: 'v1'
   });
 parser.addArgument(['--debug' ],
   {
@@ -60,12 +60,12 @@ const options = parser.parseArgs();
 // Download all existing manifests and find the one corresponding to version, date and type.
 // Returns: Promise of manifest path or throws Error
 const getManifestPath = (environment, version, date, type) => {
-  return dce.doHttpGet(environment.url, environment.passkey, environment.secret, null)
+  return exporter.doHttpGet(environment.url, environment.passkey, environment.secret, null)
     .then(function(response) {
       const manifests = JSON.parse(response.body);
       if (options.debug) {console.log(JSON.stringify(manifests, null, 4));}
 
-      const manifestPath = dce.getManifestForDate(manifests['manifests'], version, date, type);
+      const manifestPath = exporter.getManifestForDate(manifests['manifests'], version, date, type);
       if (!manifestPath) {
         throw new Error(util.format('Warning: did not find "%s" for version="%s" type="%s" in downloaded manifests', date, version, type));
       }
@@ -79,7 +79,7 @@ const getManifestPath = (environment, version, date, type) => {
 // Retrieve manifest contents
 // Returns: Promise of manifest json object
 const getManifestFile = (environment, manifestPath) => {
-  return dce.doHttpGet(environment.url, environment.passkey, environment.secret, manifestPath)
+  return exporter.doHttpGet(environment.url, environment.passkey, environment.secret, manifestPath)
     .then(function(response) {
       const manifest = JSON.parse(response.body);
       if (options.debug) {console.log(JSON.stringify(manifest, null, 4));}
@@ -90,7 +90,7 @@ const getManifestFile = (environment, manifestPath) => {
 };
 
 // Get array of files to download, from manifest list of files, filtered by category (or 'all')
-// Returns: array of strings, each representing a DCE file path
+// Returns: array of strings, each representing the export file path
 const getFilesToDownload = (manifest, category) => {
   const files = [];
   Object.keys(manifest).forEach(function(fileType) {
@@ -108,9 +108,9 @@ const getFilesToDownload = (manifest, category) => {
 // Returns: Promise of the file name
 const downloadFile = (environment, destination, path) => {
   if (options.debug) {console.log('File to download:' + path);}
-  return dce.doHttpGet(environment.url, environment.passkey, environment.secret, path)
+  return exporter.doHttpGet(environment.url, environment.passkey, environment.secret, path)
     .then(function(response) {
-      dce.saveFile(destination, path, response.body);
+      exporter.saveFile(destination, path, response.body);
 
       return path;
     });
@@ -140,14 +140,14 @@ const downloadBulk = (environment, version, date, category, destination, dataTyp
 
 };
 
-const config = dce.readConfig(options.config);
+const config = exporter.readConfig(options.config);
 
 if (!options.fulls && !options.incrementals) {
   console.error('Must specified one or both of [--fulls, --increments]');
   process.exit(1);
 }
 
-const environment = dce.getEnvironment(config, options.env) || process.exit(1);
+const environment = exporter.getEnvironment(config, options.env) || process.exit(1);
 
 if (options.fulls) {
   downloadBulk(environment, options.v, options.date, options.type, options.dest, 'fulls');
