@@ -10,7 +10,7 @@ To see what Product Sentiment Insights API is, please refer to the Bazaarvoice [
 This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
 ## Reference Tools
-Bazaarvoice export APIs are HTTP-protocol based API, and as such, is not bound to any specific programming language. Your application might be written in Java, javascript, Ruby, Python, Perl, C#, C++, or any other programming language in which HTTP requests can be made over the internet.
+Bazaarvoice export APIs based on the HTTP-protocol, and as such, are not bound to any specific programming language. Your application might be written in Java, JavaScript, Ruby, Python, Perl, C#, C++, or any other programming language in which HTTP requests can be made over the internet.
 
 The reference languages contained in this project are simple examples of how one might interact with export content. These examples are not meant for production use. Your implementation will require exception handling, HTTP retries in case of network failures, etc.
 

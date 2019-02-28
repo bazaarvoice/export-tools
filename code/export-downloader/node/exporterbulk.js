@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const ArgumentParser = require('argparse').ArgumentParser;
-const dce = require('./exporter-common.js');
+const exporter = require('./exporter-common.js');
 const util = require('util');
 var errors = require('request-promise/errors');
 
@@ -90,7 +90,7 @@ const getManifestFile = (environment, manifestPath) => {
 };
 
 // Get array of files to download, from manifest list of files, filtered by category (or 'all')
-// Returns: array of strings, each representing a DCE file path
+// Returns: array of strings, each representing the export file path
 const getFilesToDownload = (manifest, category) => {
   const files = [];
   Object.keys(manifest).forEach(function(fileType) {

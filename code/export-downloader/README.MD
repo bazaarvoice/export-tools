@@ -10,7 +10,7 @@ The example scripts contained herein are provided to get data from the Bazaarvoi
 ## Common Prerequisites
 For each of the reference tools, the following prerequisites apply:
 
-1. You should have a file called "config.json" under "./exporter-downloader" path, which includes code snippet below. Please replace "{EXPORT-PRODUCT-PASSKEY}" and "{EXPORT-PRODUCT-SECRET}" with the passkey and secret key strings provided by the Bazaarvoice team.
+1. You should have a file called "config.json" under "./exporter-downloader" path, which includes the code snippet below. Please replace "{EXPORT-PRODUCT-PASSKEY}" and "{EXPORT-PRODUCT-SECRET}" with the passkey and secret key strings provided by the Bazaarvoice team.
 
 2. Modification is also needed for the url value. Depending on the Bazaarvoice export product of interest you should replace the following: 
     

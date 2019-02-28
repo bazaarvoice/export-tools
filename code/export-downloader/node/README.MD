@@ -1,6 +1,6 @@
 # Export Downloader Tools in Node.js
 
-Two Node.js scripts files are provided to get data from the Bazaarvoice Export APIs . Please refer to [documentation](https://developer.bazaarvoice.com/poducts) for details.
+Two Node.js scripts files are provided to get data from the Bazaarvoice Export APIs . Please refer to the [documentation](https://developer.bazaarvoice.com/poducts) for details.
 
 ## Prerequisite
 1. You should have Node.js 6.0 or later installed.
